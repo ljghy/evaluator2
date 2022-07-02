@@ -62,6 +62,9 @@ int main()
         try
         {
             ret = context.exec(input);
+#ifndef NDEBUG
+            std::cout << context.AST()->toJson().toStringFormatted() << '\n';
+#endif
         }
         catch (const EvalExcept &e)
         {
@@ -70,12 +73,14 @@ int main()
         switch (ret.index())
         {
         case 1:
-            std::cout << std::get<1>(ret) << '\n';
+            std::cout << " = " << std::get<1>(ret) << '\n';
             break;
         case 2:
+            std::cout << " = ";
             printList(std::get<2>(ret));
             break;
         case 3:
+            std::cout << " = ";
             printLambdaSig(std::get<3>(ret));
             break;
         }

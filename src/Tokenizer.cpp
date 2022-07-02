@@ -17,7 +17,7 @@ static decimal_t parseDecimal(const std::string &src,
                               std::string::const_iterator &ite)
 {
     size_t idx = 0;
-    decimal_t d;
+    decimal_t d{0};
 
     try
     {

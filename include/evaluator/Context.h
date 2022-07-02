@@ -54,6 +54,7 @@ public:
     DataType exec(const std::string &);
     DataType eval(std::shared_ptr<ASTNode>);
     const VarMap &varMap() const { return m_globalVarMap; }
+    const std::shared_ptr<ASTNode> AST() const { return m_AST; }
 
 private:
     DataType call(const LambdaType &, const std::vector<std::shared_ptr<ASTNode>> &);
@@ -84,6 +85,7 @@ private:
     static ListType listPow(const ListType &, const ListType &);
 
 private:
+    std::shared_ptr<ASTNode> m_AST;
     VarMap m_globalVarMap;
 };
 } // namespace eval

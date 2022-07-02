@@ -1,10 +1,6 @@
 #include <evaluator/Context.h>
 #include <cmath>
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
-
 namespace eval
 {
 
@@ -17,10 +13,12 @@ void Context::init()
 DataType Context::exec(const std::string &input)
 {
     Parser parser;
-    auto ret = eval(parser.parse(tokenize(input)));
+    m_AST = parser.parse(tokenize(input));
+    auto ret = eval(m_AST);
     if (ret.index() != 0)
         m_globalVarMap["ans"] = ret;
     return ret;
+    return 0.0;
 }
 
 DataType Context::eval(std::shared_ptr<ASTNode> ast)

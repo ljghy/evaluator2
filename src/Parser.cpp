@@ -72,9 +72,8 @@ std::shared_ptr<ASTNode> Parser::parse(const TokenList &tkl)
 
 bool Parser::parseAssign(std::shared_ptr<ASTNode> &ast)
 {
-    CHECK_END;
     ast->alloc(2);
-    if (m_pos->type == TokenType::IDENT)
+    if (m_pos != m_end && m_pos->type == TokenType::IDENT)
     {
         ast->value = OptrType::ASSIGN;
         ast->children[0]->value = m_pos->getIdent();
@@ -88,14 +87,13 @@ bool Parser::parseAssign(std::shared_ptr<ASTNode> &ast)
     {
         ++m_pos;
         ast->value = OptrType::ASSIGN_LAMBDA;
-        if (parseParamList(ast->children[1]) && m_pos->type == TokenType::RPAR)
+        if (parseParamList(ast->children[1]) && m_pos != m_end && m_pos->type == TokenType::RPAR)
             ++m_pos;
         else
             return false;
         ast->children.push_back(std::make_shared<ASTNode>());
     }
-    CHECK_END;
-    if (m_pos->type == TokenType::ASSIGN)
+    if (m_pos != m_end && m_pos->type == TokenType::ASSIGN)
         ++m_pos;
     else
         return false;
@@ -125,15 +123,13 @@ bool Parser::parseExprL1(std::shared_ptr<ASTNode> &ast)
 {
     if (!parseExprUnary(ast))
         return false;
-    while (m_pos->type == TokenType::ADD || m_pos->type == TokenType::SUB)
+    while (m_pos != m_end && (m_pos->type == TokenType::ADD || m_pos->type == TokenType::SUB))
     {
         auto cpy = std::make_shared<ASTNode>(*ast);
         ast->alloc(2);
         ast->children[0] = cpy;
         ast->value = m_pos->type == TokenType::ADD ? OptrType::ADD : OptrType::SUB;
-
         ++m_pos;
-
         if (!parseExprUnary(ast->children[1]))
             return false;
     }
@@ -144,7 +140,7 @@ bool Parser::parseExprL2(std::shared_ptr<ASTNode> &ast)
 {
     if (!parseExprL3(ast))
         return false;
-    while (m_pos->type == TokenType::MUL || m_pos->type == TokenType::DIV)
+    while (m_pos != m_end && (m_pos->type == TokenType::MUL || m_pos->type == TokenType::DIV))
     {
         auto cpy = std::make_shared<ASTNode>(*ast);
         ast->alloc(2);
@@ -162,7 +158,7 @@ bool Parser::parseExprL3(std::shared_ptr<ASTNode> &ast)
     auto node = ast;
     while (parseTerm(node))
     {
-        if (m_pos->type != TokenType::POW)
+        if (m_pos == m_end || m_pos->type != TokenType::POW)
             return true;
         ++m_pos;
         auto cpy = std::make_shared<ASTNode>(*node);
@@ -196,7 +192,7 @@ bool Parser::parseTerm(std::shared_ptr<ASTNode> &ast)
         ++m_pos;
         if (!parseExpr(ast))
             return false;
-        if (m_pos->type != TokenType::RPAR)
+        if (m_pos == m_end || m_pos->type != TokenType::RPAR)
             return false;
         ++m_pos;
     }
@@ -213,9 +209,7 @@ bool Parser::parseTerm(std::shared_ptr<ASTNode> &ast)
     else
         return false;
 
-    if (m_pos == m_end)
-        return true;
-    while (true)
+    while (m_pos != m_end)
     {
         if (m_pos->type == TokenType::LPAR)
         {
@@ -226,7 +220,7 @@ bool Parser::parseTerm(std::shared_ptr<ASTNode> &ast)
             ast->children[0] = cpy;
             if (!parseExprList(ast->children[1]))
                 return false;
-            if (m_pos->type != TokenType::RPAR)
+            if (m_pos == m_end || m_pos->type != TokenType::RPAR)
                 return false;
             ++m_pos;
         }
@@ -239,7 +233,7 @@ bool Parser::parseTerm(std::shared_ptr<ASTNode> &ast)
             ast->children[0] = cpy;
             if (!parseExpr(ast->children[1]))
                 return false;
-            if (m_pos->type != TokenType::RSQR)
+            if (m_pos == m_end || m_pos->type != TokenType::RSQR)
                 return false;
             ++m_pos;
             return true;
@@ -252,9 +246,10 @@ bool Parser::parseTerm(std::shared_ptr<ASTNode> &ast)
 
 bool Parser::parseList(std::shared_ptr<ASTNode> &ast)
 {
-    if (m_pos->type != TokenType::LSQR)
+    if (m_pos == m_end || m_pos->type != TokenType::LSQR)
         return false;
     ++m_pos;
+    CHECK_END;
     if (parseExprList(ast) && m_pos->type == TokenType::RSQR)
     {
         ++m_pos;
@@ -269,11 +264,11 @@ bool Parser::parseParamList(std::shared_ptr<ASTNode> &ast)
 {
     ast->value = OptrType::PARAM_LIST;
     ast->children.clear();
-    while (m_pos->type == TokenType::IDENT)
+    while (m_pos != m_end && m_pos->type == TokenType::IDENT)
     {
         ast->children.push_back(std::make_shared<ASTNode>(m_pos->getIdent()));
         ++m_pos;
-        if (m_pos->type != TokenType::COMMA)
+        if (m_pos == m_end || m_pos->type != TokenType::COMMA)
             return true;
         ++m_pos;
     }
@@ -288,7 +283,7 @@ bool Parser::parseExprList(std::shared_ptr<ASTNode> &ast)
     while (parseExpr(tmp))
     {
         ast->children.push_back(tmp);
-        if (m_pos->type != TokenType::COMMA)
+        if (m_pos == m_end || m_pos->type != TokenType::COMMA)
             return true;
         ++m_pos;
         tmp = std::make_shared<ASTNode>();
@@ -298,24 +293,24 @@ bool Parser::parseExprList(std::shared_ptr<ASTNode> &ast)
 
 bool Parser::parseLambda(std::shared_ptr<ASTNode> &ast)
 {
-    if (m_pos->type != TokenType::LAMBDA)
+    if (m_pos == m_end || m_pos->type != TokenType::LAMBDA)
         return false;
     ++m_pos;
-    if (m_pos->type != TokenType::LPAR)
+    if (m_pos == m_end || m_pos->type != TokenType::LPAR)
         return false;
     ++m_pos;
     ast->value = OptrType::LAMBDA;
     ast->alloc(2);
     parseParamList(ast->children[0]);
-    if (m_pos->type != TokenType::RPAR)
+    if (m_pos == m_end || m_pos->type != TokenType::RPAR)
         return false;
     ++m_pos;
-    if (m_pos->type != TokenType::LCUR)
+    if (m_pos == m_end || m_pos->type != TokenType::LCUR)
         return false;
     ++m_pos;
     if (!parseExpr(ast->children[1]))
         return false;
-    if (m_pos->type != TokenType::RCUR)
+    if (m_pos == m_end || m_pos->type != TokenType::RCUR)
         return false;
     ++m_pos;
     return true;
@@ -398,6 +393,8 @@ JsonNode ASTNode::toJson() const
         return {{"TYPE", jsptr("PARAM_LIST")},
                 {"PARAMS", jsptr(arr)}};
     }
+    default:
+        return JsonNull;
     }
 }
 #endif

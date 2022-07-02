@@ -25,7 +25,7 @@
         if (params.size() != 2)                        \
             throw EvalExcept(EVAL_WRONG_NUMBER_OF_PARAMETERS); \
         auto x = context.eval(params[0]);              \
-        auto y = context.eval(params[1]);              \
+        auto y = context.eval(params[1]);               \
         if (x.index() == 1 && y.index() == 1)                            \
             return decimal_t(std::get<1>(x) optr std::get<1>(y));                                       \
         throw EvalExcept(EVAL_WRONG_PARAMETER_TYPE);     \
@@ -107,6 +107,11 @@ void Context::setupInternalFunc()
         nullptr,
         true,
         UNARY_FUNC_TEMPLATE(std::tgamma)};
+    m_globalVarMap["sqrt"] = LambdaType{
+        {"x"},
+        nullptr,
+        true,
+        UNARY_FUNC_TEMPLATE(std::sqrt)};
     m_globalVarMap["not"] = LambdaType{
         {"x"},
         nullptr,
