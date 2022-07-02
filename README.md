@@ -86,4 +86,66 @@ fact(5)
 !list
 !exit
 ```
+## Specification
 
+### EBNF
+```
+ASSIGN -> ident '=' EXPR
+ASSIGN_LABMDA -> ident '(' PARAM_LIST ')' '=' EXPR
+EXPR -> EXPR_L1
+
+TERM -> decimal | ident | '(' EXPR ')' | LIST | LAMBDA | INDEX | CALL 
+LIST -> '[' EXPR_LIST ']'
+LAMBDA -> '@' '(' PARAM_LIST ')' '{' EXPR '}'
+INDEX -> TERM '[' EXPR ']'
+CALL -> TERM '(' EXPR_LIST ')'
+PARAM_LIST -> empty | ident {',' ident}
+EXPR_LIST -> empty | EXPR {',' EXPR}
+EXPR_UNARY -> ['-'] EXPR_L2
+EXPR_L1 -> EXPR_UNARY {OPTR_L1 EXPR_UNARY}
+EXPR_L2 -> EXPR_L3 {OPTR_L2 EXPR_L3}
+EXPR_L3 -> TERM {'^' TERM}
+OPTR_L1 -> '+' | '-'
+OPTR_L2 -> '*' | '/'
+```
+
+### Internal Variables
+```
+pi
+e
+ans
+```
+
+### Internal Functions
+```
+sqrt(x)
+sin(x)
+cos(x)
+tan(x)
+asin(x)
+acos(x)
+atan(x)
+exp(x)
+ln(x)
+abs(x)
+round(x)
+floor(x)
+ceil(x)
+gamma(x)
+erf(x)
+
+len(list)
+
+not(x)
+and(x, y)
+or(x, y)
+
+eq(x, y)
+neq(x, y)
+gt(x, y)
+lt(x, y)
+geq(x, y)
+leq(x, y)
+
+if_else(cond, true, false)
+```
