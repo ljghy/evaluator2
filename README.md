@@ -78,6 +78,13 @@ Y = @(f){@(g){f(g(g))}(@(g){f(@(y){g(g)(y)})})}
 fact_gen = @(f){@(n){if_else(n, n * f(n - 1), 1)}}
 fact = Y(fact_gen)
 fact(5)
+
+map_n(list, f, n) = map_n(list, f, n) = if_else(gt(n, 0), assign(map_n(list, f, n - 1), n - 1, f(list[n - 1])), list)
+map(list, f) = map_n(list, f, len(list))
+map([1, 2, 3, 4, 5], sin)
+
+construct(f, n) = if_else(gt(n, 0), append(construct(f, n - 1), f(n - 1)), [])
+construct(fib, 10)
 ```
 
 ### Commands
@@ -135,6 +142,10 @@ gamma(x)
 erf(x)
 
 len(list)
+assign(list, idx, val)
+append(list, val)
+slice(list, st, ed)
+reverse(list)
 
 not(x)
 and(x, y)

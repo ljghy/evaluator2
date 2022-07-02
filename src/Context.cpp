@@ -1,5 +1,6 @@
 #include <evaluator/Context.h>
 #include <cmath>
+#include <algorithm>
 
 #include <iostream>
 
