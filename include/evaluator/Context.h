@@ -24,6 +24,7 @@ struct LambdaType
     std::shared_ptr<ASTNode> expr;
     bool isInternalFunc = false;
     std::function<InternalFuncRet(const std::vector<std::shared_ptr<ASTNode>> &, Context &)> internalFuncDef;
+    std::string internalFuncName;
 };
 
 enum class InternalFuncRetType

@@ -41,113 +41,135 @@ void Context::setupInternalFunc()
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::sin)};
+        UNARY_FUNC_TEMPLATE(std::sin),
+        "sin"};
     m_globalVarMap["cos"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::cos)};
+        UNARY_FUNC_TEMPLATE(std::cos),
+        "cos"};
     m_globalVarMap["tan"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::tan)};
+        UNARY_FUNC_TEMPLATE(std::tan),
+        "tan"};
     m_globalVarMap["asin"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::asin)};
+        UNARY_FUNC_TEMPLATE(std::asin),
+        "asin"};
     m_globalVarMap["acos"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::acos)};
+        UNARY_FUNC_TEMPLATE(std::acos),
+        "acos"};
     m_globalVarMap["atan"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::atan)};
+        UNARY_FUNC_TEMPLATE(std::atan),
+        "atan"};
     m_globalVarMap["exp"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::exp)};
+        UNARY_FUNC_TEMPLATE(std::exp),
+        "exp"};
     m_globalVarMap["ln"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::log)};
+        UNARY_FUNC_TEMPLATE(std::log),
+        "ln"};
     m_globalVarMap["abs"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::abs)};
+        UNARY_FUNC_TEMPLATE(std::abs),
+        "abs"};
     m_globalVarMap["floor"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::floor)};
+        UNARY_FUNC_TEMPLATE(std::floor),
+        "floor"};
     m_globalVarMap["ceil"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::ceil)};
+        UNARY_FUNC_TEMPLATE(std::ceil),
+        "ceil"};
     m_globalVarMap["round"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::round)};
+        UNARY_FUNC_TEMPLATE(std::round),
+        "round"};
     m_globalVarMap["erf"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::erf)};
+        UNARY_FUNC_TEMPLATE(std::erf),
+        "erf"};
     m_globalVarMap["gamma"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::tgamma)};
+        UNARY_FUNC_TEMPLATE(std::tgamma),
+        "gamma"};
     m_globalVarMap["sqrt"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(std::sqrt)};
+        UNARY_FUNC_TEMPLATE(std::sqrt),
+        "sqrt"};
     m_globalVarMap["not"] = LambdaType{
         {"x"},
         nullptr,
         true,
-        UNARY_FUNC_TEMPLATE(!)};
+        UNARY_FUNC_TEMPLATE(!),
+        "not"};
 
     m_globalVarMap["eq"] = LambdaType{
         {"x", "y"},
         nullptr,
         true,
-        CMP_OPTR_TEMPLATE(==)};
+        CMP_OPTR_TEMPLATE(==),
+        "eq"};
     m_globalVarMap["neq"] = LambdaType{
         {"x", "y"},
         nullptr,
         true,
-        CMP_OPTR_TEMPLATE(!=)};
+        CMP_OPTR_TEMPLATE(!=),
+        "neq"};
     m_globalVarMap["gt"] = LambdaType{
         {"x", "y"},
         nullptr,
         true,
-        CMP_OPTR_TEMPLATE(>)};
+        CMP_OPTR_TEMPLATE(>),
+        "gt"};
     m_globalVarMap["lt"] = LambdaType{
         {"x", "y"},
         nullptr,
         true,
-        CMP_OPTR_TEMPLATE(<)};
+        CMP_OPTR_TEMPLATE(<),
+        "lt"};
     m_globalVarMap["geq"] = LambdaType{
         {"x", "y"},
         nullptr,
         true,
-        CMP_OPTR_TEMPLATE(>=)};
+        CMP_OPTR_TEMPLATE(>=),
+        "geq"};
     m_globalVarMap["leq"] = LambdaType{
         {"x", "y"},
         nullptr,
         true,
-        CMP_OPTR_TEMPLATE(<=)};
+        CMP_OPTR_TEMPLATE(<=),
+        "leq"};
 
     m_globalVarMap["and"] = LambdaType{
         {"x", "y"},
@@ -166,7 +188,8 @@ void Context::setupInternalFunc()
             if (y.index() != 1)
                 throw EvalExcept(EVAL_WRONG_PARAMETER_TYPE);
             return decimal_t(static_cast<bool>(std::get<1>(y)));
-        }};
+        },
+        "and"};
 
     m_globalVarMap["or"] = LambdaType{
         {"x", "y"},
@@ -185,7 +208,8 @@ void Context::setupInternalFunc()
             if (y.index() != 1)
                 throw EvalExcept(EVAL_WRONG_PARAMETER_TYPE);
             return decimal_t(static_cast<bool>(std::get<1>(y)));
-        }};
+        },
+        "or"};
 
     m_globalVarMap["if_else"] = LambdaType{
         {"cond", "true", "false"},
@@ -213,7 +237,8 @@ void Context::setupInternalFunc()
                 assert(0);
                 return decimal_t(0);
             }
-        }};
+        },
+        "if_else"};
 
     m_globalVarMap["len"] = LambdaType{
         {"list"},
@@ -227,7 +252,8 @@ void Context::setupInternalFunc()
             if (l.index() != 2)
                 throw EvalExcept(EVAL_WRONG_PARAMETER_TYPE);
             return static_cast<decimal_t>(std::get<2>(l).size());
-        }};
+        },
+        "len"};
 }
 
 #endif

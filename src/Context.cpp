@@ -161,8 +161,10 @@ std::shared_ptr<ASTNode> Context::substitude(const std::shared_ptr<ASTNode> &exp
         }
         case 3:
         {
-            auto ret = std::make_shared<ASTNode>(OptrType::LAMBDA);
             auto &l = std::get<3>(d);
+            if (l.isInternalFunc)
+                return std::make_shared<ASTNode>(l.internalFuncName);
+            auto ret = std::make_shared<ASTNode>(OptrType::LAMBDA);
             ret->alloc(2);
             ret->children[0]->value = OptrType::PARAM_LIST;
             ret->children[0]->alloc(l.params.size());
