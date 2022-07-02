@@ -33,7 +33,7 @@ make
 
 ## Examples
 
-### Arithmatic Expressions
+### Arithmetic Expressions
 ```
 sin(pi / 2) + sqrt(2) ^ gamma(3) - 4 * 5 / sin(-6 - 7 / ln(8)) - 9
 ```
@@ -52,7 +52,7 @@ sin(pi / 2) + sqrt(2) ^ gamma(3) - 4 * 5 / sin(-6 - 7 / ln(8)) - 9
 @(a){@(x){x + a}}
 ```
 
-### List Arithmatic Expressions
+### List Arithmetic Expressions
 ```
 1 + [2, 3]
 [1, 2] + [3, 4]
