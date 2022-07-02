@@ -1,6 +1,8 @@
 #include <evaluator/Context.h>
 #include <cmath>
 
+#include <iostream>
+
 namespace eval
 {
 
@@ -137,47 +139,45 @@ std::shared_ptr<ASTNode> Context::substitude(const std::shared_ptr<ASTNode> &exp
     if (expr->isOptr() && expr->getOptr() == OptrType::LAMBDA)
         for (auto &c : expr->children[0]->children)
             masked.insert(c->getIdent());
+    if (expr->isIdent() && (masked.find(expr->getIdent()) == masked.end()))
+    {
+        auto ite = varMap.find(expr->getIdent());
+        if (ite == varMap.end())
+            return std::make_shared<ASTNode>(*expr);
+        auto d = ite->second;
+        assert(d.index() != 0);
+        switch (d.index())
+        {
+        case 1:
+            return std::make_shared<ASTNode>(std::get<1>(d));
+        case 2:
+        {
+            auto ret = std::make_shared<ASTNode>(OptrType::LIST);
+            auto &l = std::get<2>(d);
+            ret->alloc(l.size());
+            for (size_t i = 0; i < l.size(); ++i)
+                ret->children[i] = std::make_shared<ASTNode>(l[i]);
+            return ret;
+        }
+        case 3:
+        {
+            auto ret = std::make_shared<ASTNode>(OptrType::LAMBDA);
+            auto &l = std::get<3>(d);
+            ret->alloc(2);
+            ret->children[0]->value = OptrType::PARAM_LIST;
+            ret->children[0]->alloc(l.params.size());
+            for (size_t i = 0; i < l.params.size(); ++i)
+                ret->children[0]->children[i]->value = l.params[i];
+            ret->children[1] = l.expr;
+            return ret;
+        }
+        }
+        assert(0);
+    }
+
     auto ret = std::make_shared<ASTNode>(*expr);
     for (auto &c : ret->children)
-    {
-        if (c->isIdent() && (masked.find(c->getIdent()) == masked.end()))
-        {
-            auto ite = varMap.find(c->getIdent());
-            if (ite == varMap.end())
-                continue;
-            auto d = ite->second;
-            assert(d.index() != 0);
-            switch (d.index())
-            {
-            case 1:
-                c = std::make_shared<ASTNode>(std::get<1>(d));
-                break;
-            case 2:
-            {
-                c = std::make_shared<ASTNode>(OptrType::LIST);
-                auto &l = std::get<2>(d);
-                c->alloc(l.size());
-                for (size_t i = 0; i < l.size(); ++i)
-                    c->children[i] = std::make_shared<ASTNode>(l[i]);
-            }
-            break;
-            case 3:
-            {
-                c = std::make_shared<ASTNode>(OptrType::LAMBDA);
-                auto &l = std::get<3>(d);
-                c->alloc(2);
-                c->children[0]->value = OptrType::PARAM_LIST;
-                c->children[0]->alloc(l.params.size());
-                for (size_t i = 0; i < l.params.size(); ++i)
-                    c->children[0]->children[i]->value = l.params[i];
-                c->children[1] = l.expr;
-            }
-            break;
-            }
-        }
-        else
-            c = substitude(c, varMap, masked);
-    }
+        c = substitude(c, varMap, masked);
     return ret;
 }
 
