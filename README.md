@@ -89,9 +89,10 @@ construct(fib, 10)
 
 ### Commands
 ```
-!init
-!list
-!exit
+!init: initialize internal function list
+!list: display current identifiers
+!exit: exit
+!ast: print expression AST
 ```
 ## Specification
 

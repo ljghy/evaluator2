@@ -1,61 +1,11 @@
 #ifndef EVAL_PARSER_H_
 #define EVAL_PARSER_H_
 
-#include <evaluator/EvalDefs.h>
 #include <evaluator/Tokenizer.h>
-
-#include <variant>
-#include <memory>
-
-#ifndef NDEBUG
-#include <JsonParser.hpp>
-#endif
+#include <evaluator/AST.h>
 
 namespace eval
 {
-
-enum class OptrType
-{
-    ASSIGN,
-    ASSIGN_LAMBDA,
-    NEG,
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    POW,
-    CALL,
-    INDEX,
-    LIST,
-    LAMBDA,
-    EXPR_LIST,
-    PARAM_LIST
-};
-
-struct ASTNode
-{
-    std::variant<OptrType, decimal_t, std::string> value;
-    std::vector<std::shared_ptr<ASTNode>> children;
-
-    ASTNode() = default;
-    template <typename ValType>
-    ASTNode(const ValType &v) : value(v) {}
-
-    ASTNode(const ASTNode &) = default;
-
-    void alloc(size_t s);
-
-    bool isOptr() const;
-    bool isDecimal() const;
-    bool isIdent() const;
-    OptrType getOptr() const;
-    decimal_t getDecimal() const;
-    std::string getIdent() const;
-
-#ifndef NDEBUG
-    JsonNode toJson() const;
-#endif
-};
 
 class Parser
 {

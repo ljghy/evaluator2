@@ -1,5 +1,6 @@
 #include <iostream>
 #include <evaluator/Context.h>
+
 using namespace eval;
 
 void printList(const ListType &l)
@@ -12,6 +13,8 @@ void printList(const ListType &l)
     std::cout << "]\n";
 }
 
+bool printAST = false;
+
 void printLambdaSig(const LambdaType &l)
 {
     std::cout << "@(";
@@ -19,13 +22,20 @@ void printLambdaSig(const LambdaType &l)
         std::cout << l.params[0];
     for (size_t i = 1; i < l.params.size(); ++i)
         std::cout << ", " << l.params[i];
-    std::cout << "){...}\n";
+    if (!printAST || l.expr == nullptr)
+        std::cout << "){...}\n";
+    else
+    {
+        std::cout << "){\n";
+        std::cout << l.expr->toJson().toStringFormatted() << "\n}\n";
+    }
 }
 
 int main()
 {
     Context context;
     context.init();
+
     while (true)
     {
         std::cout << "eval> ";
@@ -51,6 +61,10 @@ int main()
             {
                 context.init();
             }
+            else if (cmd == "ast")
+            {
+                printAST = !printAST;
+            }
             else
             {
                 std::cout << "unknown command\n";
@@ -62,9 +76,8 @@ int main()
         try
         {
             ret = context.exec(input);
-#ifndef NDEBUG
-            std::cout << context.AST()->toJson().toStringFormatted() << '\n';
-#endif
+            if (printAST)
+                std::cout << context.AST()->toJson().toStringFormatted() << '\n';
         }
         catch (const EvalExcept &e)
         {
