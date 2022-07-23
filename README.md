@@ -69,7 +69,7 @@ f(x, y) = sqrt(x^2 + y^2)
 f(3, 4)
 fib(n) = if_else(gt(n, 1), fib(n - 1) + fib(n - 2), 1)
 
-sum_list(l, n) = if_else(gt(n, 1), sum_list(l, n - 1) + l[n - 1], l[0])
+sum_list(l, n) = if_else(gt(n, 0), sum_list(l, n - 1) + l[n - 1], 0)
 sum = @(l){sum_list(l, len(l))}
 sum([1, 2, 3])
 mean(l) = sum(l) / len(l)
@@ -79,7 +79,7 @@ fact_gen = @(f){@(n){if_else(n, n * f(n - 1), 1)}}
 fact = Y(fact_gen)
 fact(5)
 
-map_n(list, f, n) = map_n(list, f, n) = if_else(gt(n, 0), assign(map_n(list, f, n - 1), n - 1, f(list[n - 1])), list)
+map_n(list, f, n) = if_else(gt(n, 0), assign(map_n(list, f, n - 1), n - 1, f(list[n - 1])), list)
 map(list, f) = map_n(list, f, len(list))
 map([1, 2, 3, 4, 5], sin)
 
